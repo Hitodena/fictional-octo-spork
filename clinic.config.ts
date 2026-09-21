@@ -250,6 +250,18 @@ const config: ClinicConfig = {
         description: 'Врач стоматолог-ортопед 1-й категории',
         photo: '/images/team/doctor-4.webp',
       },
+      {
+        name: 'Анна Ковальчук',
+        role: 'Хирург',
+        description: 'Врач стоматолог-хирург 1-й категории',
+        photo: '/images/team/doctor-1.webp',
+      },
+      {
+        name: 'Дмитрий Савельев',
+        role: 'Имплантолог',
+        description: 'Врач стоматолог-хирург высшей категории',
+        photo: '/images/team/doctor-2.webp',
+      },
     ],
   },
 
@@ -316,9 +328,8 @@ const config: ClinicConfig = {
   map: {
     provider: 'yandex',
     // Вставьте свой embed src из Яндекс.Конструктора или Google Maps
-    // Пример для ул. Московская 12, Минск (замените на свой код):
     embedUrl:
-      'https://yandex.ru/map-widget/v1/?ll=27.5395%2C53.8901&z=16&pt=27.5395,53.8901,pm2rdm&l=map',
+      'https://yandex.ru/map-widget/v1/?um=constructor%3Ab6f86818976cda6ce010784522cd72f87d4f2887daa5719b9813705efb2beb2a&source=constructor',
     height: 420,
   },
 

@@ -1,7 +1,20 @@
 <script setup lang="ts">
 const clinic = useClinic()
 const el = ref<HTMLElement | null>(null)
-const track = ref<HTMLElement | null>(null)
+const page = ref(0)
+
+const PAGE_SIZE = 3
+
+const pages = computed(() => {
+  const members = clinic.team.members
+  const result = []
+  for (let i = 0; i < members.length; i += PAGE_SIZE) {
+    result.push(members.slice(i, i + PAGE_SIZE))
+  }
+  return result
+})
+
+const pageCount = computed(() => pages.value.length)
 
 onMounted(() => {
   if (!el.value) return
@@ -17,8 +30,16 @@ onMounted(() => {
   observer.observe(el.value)
 })
 
-function scrollBy(dir: number) {
-  track.value?.scrollBy({ left: dir * 280, behavior: 'smooth' })
+function goTo(next: number) {
+  page.value = Math.min(Math.max(next, 0), pageCount.value - 1)
+}
+
+function prev() {
+  goTo(page.value - 1)
+}
+
+function next() {
+  goTo(page.value + 1)
 }
 </script>
 
@@ -31,20 +52,64 @@ function scrollBy(dir: number) {
           <p>{{ clinic.team.subtitle }}</p>
         </div>
         <div class="team__controls">
-          <button type="button" aria-label="Предыдущий" @click="scrollBy(-1)">‹</button>
-          <button type="button" aria-label="Следующий" @click="scrollBy(1)">›</button>
+          <button
+            type="button"
+            class="nav-btn"
+            aria-label="Предыдущая страница"
+            :disabled="page <= 0"
+            @click="prev"
+          >
+            <UiIcon name="chevron-left" :size="20" />
+          </button>
+          <button
+            type="button"
+            class="nav-btn"
+            aria-label="Следующая страница"
+            :disabled="page >= pageCount - 1"
+            @click="next"
+          >
+            <UiIcon name="chevron-right" :size="20" />
+          </button>
         </div>
       </div>
 
-      <div ref="track" class="team__track" tabindex="0">
-        <article v-for="member in clinic.team.members" :key="member.name" class="member">
-          <img :src="member.photo" :alt="member.name" width="320" height="400" />
-          <div class="member__info">
-            <h3>{{ member.name }}</h3>
-            <p class="role">{{ member.role }}</p>
-            <p class="desc">{{ member.description }}</p>
+      <div class="carousel" aria-roledescription="carousel" aria-label="Специалисты клиники">
+        <div
+          class="carousel__track"
+          :style="{ transform: `translateX(-${page * 100}%)` }"
+        >
+          <div
+            v-for="(group, pageIndex) in pages"
+            :key="pageIndex"
+            class="carousel__page"
+            role="group"
+            :aria-label="`Страница ${pageIndex + 1} из ${pageCount}`"
+            :aria-hidden="pageIndex !== page"
+          >
+            <article v-for="member in group" :key="member.name" class="member">
+              <img :src="member.photo" :alt="member.name" width="320" height="400" />
+              <div class="member__info">
+                <h3>{{ member.name }}</h3>
+                <p class="role">{{ member.role }}</p>
+                <p class="desc">{{ member.description }}</p>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
+      </div>
+
+      <div class="team__dots" role="tablist" aria-label="Страницы специалистов">
+        <button
+          v-for="(_, i) in pages"
+          :key="i"
+          type="button"
+          class="dot"
+          :class="{ 'is-active': i === page }"
+          :aria-label="`Страница ${i + 1}`"
+          :aria-selected="i === page"
+          role="tab"
+          @click="goTo(i)"
+        />
       </div>
     </div>
   </section>
@@ -62,43 +127,62 @@ function scrollBy(dir: number) {
 .team__controls {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
-.team__controls button {
+.nav-btn {
+  display: inline-grid;
+  place-items: center;
   width: 44px;
   height: 44px;
+  padding: 0;
+  margin: 0;
   border-radius: 50%;
   border: 1px solid var(--color-border);
   background: #fff;
   color: var(--color-text);
-  font-size: 1.35rem;
+  line-height: 0;
   cursor: pointer;
-  transition: background 180ms ease, border-color 180ms ease;
+  transition: background 180ms ease, border-color 180ms ease, opacity 180ms ease;
 }
 
-.team__controls button:hover {
+.nav-btn :deep(svg) {
+  display: block;
+}
+
+.nav-btn:hover:not(:disabled) {
   background: var(--color-bg-soft);
   border-color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
-.team__controls button:focus-visible {
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nav-btn:focus-visible {
   outline: 3px solid var(--color-secondary);
   outline-offset: 2px;
 }
 
-.team__track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(240px, 280px);
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 0.5rem;
-  scrollbar-width: thin;
+.carousel {
+  overflow: hidden;
+  width: 100%;
 }
 
-.member {
-  scroll-snap-align: start;
+.carousel__track {
+  display: flex;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.carousel__page {
+  flex: 0 0 100%;
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
 }
 
 .member img {
@@ -125,5 +209,39 @@ function scrollBy(dir: number) {
 .desc {
   color: var(--color-text-muted);
   font-size: 0.9rem;
+}
+
+.team__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(8, 145, 178, 0.25);
+  cursor: pointer;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.dot.is-active {
+  width: 22px;
+  background: var(--color-primary);
+}
+
+.dot:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+@media (min-width: 700px) {
+  .carousel__page {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>
