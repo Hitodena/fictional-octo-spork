@@ -327,10 +327,10 @@ const config: ClinicConfig = {
 
   map: {
     provider: 'yandex',
-    // Вставьте свой embed src из Яндекс.Конструктора или Google Maps
+    // Только src из iframe Конструктора (не весь <iframe>...</iframe>)
     embedUrl:
-      'https://yandex.ru/map-widget/v1/?um=constructor%3Ab6f86818976cda6ce010784522cd72f87d4f2887daa5719b9813705efb2beb2a&source=constructor',
-    height: 420,
+      'https://yandex.ru/map-widget/v1/?um=constructor%3Ab6f86818976cda6ce010784522cd72f87d4f2887daa5719b9813705efb2beb2a&source=constructor&scroll=false',
+    height: 480,
   },
 
   social: [],

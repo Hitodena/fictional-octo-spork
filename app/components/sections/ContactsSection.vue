@@ -96,8 +96,8 @@ onMounted(() => {
           <iframe
             title="Карта клиники"
             :src="clinic.map.embedUrl"
-            :height="clinic.map.height"
-            loading="lazy"
+            :style="{ height: `${clinic.map.height}px` }"
+            loading="eager"
             referrerpolicy="no-referrer-when-downgrade"
             allowfullscreen
           />
@@ -246,15 +246,15 @@ p {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  min-height: 280px;
   background: #e0f2fe;
+  width: 100%;
 }
 
-iframe {
+.map iframe {
+  display: block;
   width: 100%;
   border: 0;
-  display: block;
-  min-height: 280px;
+  min-height: 320px;
 }
 
 @media (min-width: 720px) {
@@ -279,14 +279,7 @@ iframe {
 
 @media (min-width: 960px) {
   .contacts__grid {
-    grid-template-columns: 0.9fr 1.2fr;
-    align-items: stretch;
-  }
-
-  .map,
-  iframe {
-    height: 100%;
-    min-height: 420px;
+    grid-template-columns: 1fr;
   }
 }
 </style>
