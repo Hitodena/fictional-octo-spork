@@ -98,11 +98,6 @@ function next() {
           </div>
         </div>
       </div>
-
-      <div class="team__dots" role="tablist" aria-label="Страницы специалистов">
-        <button v-for="(_, i) in pages" :key="i" type="button" class="dot" :class="{ 'is-active': i === page }"
-          :aria-label="`Страница ${i + 1}`" :aria-selected="i === page" role="tab" @click="goTo(i)" />
-      </div>
     </div>
   </section>
 </template>
@@ -209,34 +204,6 @@ function next() {
   font-size: 0.9rem;
 }
 
-.team__dots {
-  display: flex;
-  justify-content: center;
-  gap: 0.45rem;
-  margin-top: 1.25rem;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(8, 145, 178, 0.25);
-  cursor: pointer;
-  transition: width 180ms ease, background 180ms ease;
-}
-
-.dot.is-active {
-  width: 22px;
-  background: var(--color-primary);
-}
-
-.dot:focus-visible {
-  outline: 3px solid var(--color-secondary);
-  outline-offset: 2px;
-}
-
 @media (min-width: 700px) {
   .carousel__page {
     grid-template-columns: repeat(3, 1fr);
@@ -244,9 +211,7 @@ function next() {
 }
 
 @media (max-width: 699px) {
-
-  .team__controls,
-  .team__dots {
+  .team__controls {
     display: none;
   }
 
