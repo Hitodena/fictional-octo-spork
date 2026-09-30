@@ -2,6 +2,7 @@
 const clinic = useClinic()
 const el = ref<HTMLElement | null>(null)
 const page = ref(0)
+const isMobile = ref(false)
 
 const PAGE_SIZE = 3
 
@@ -16,7 +17,16 @@ const pages = computed(() => {
 
 const pageCount = computed(() => pages.value.length)
 
+let mq: MediaQueryList | null = null
+const syncMobile = () => {
+  isMobile.value = !!mq?.matches
+}
+
 onMounted(() => {
+  mq = window.matchMedia('(max-width: 699px)')
+  syncMobile()
+  mq.addEventListener('change', syncMobile)
+
   if (!el.value) return
   const observer = new IntersectionObserver(
     ([entry]) => {
@@ -28,6 +38,10 @@ onMounted(() => {
     { threshold: 0.1 },
   )
   observer.observe(el.value)
+})
+
+onBeforeUnmount(() => {
+  mq?.removeEventListener('change', syncMobile)
 })
 
 function goTo(next: number) {
@@ -52,42 +66,29 @@ function next() {
           <p>{{ clinic.team.subtitle }}</p>
         </div>
         <div class="team__controls">
-          <button
-            type="button"
-            class="nav-btn"
-            aria-label="Предыдущая страница"
-            :disabled="page <= 0"
-            @click="prev"
-          >
+          <button type="button" class="nav-btn" aria-label="Предыдущая страница" :disabled="page <= 0" @click="prev">
             <UiIcon name="chevron-left" :size="20" />
           </button>
-          <button
-            type="button"
-            class="nav-btn"
-            aria-label="Следующая страница"
-            :disabled="page >= pageCount - 1"
-            @click="next"
-          >
+          <button type="button" class="nav-btn" aria-label="Следующая страница" :disabled="page >= pageCount - 1"
+            @click="next">
             <UiIcon name="chevron-right" :size="20" />
           </button>
         </div>
       </div>
 
       <div class="carousel" aria-roledescription="carousel" aria-label="Специалисты клиники">
-        <div
-          class="carousel__track"
-          :style="{ transform: `translateX(-${page * 100}%)` }"
-        >
-          <div
-            v-for="(group, pageIndex) in pages"
-            :key="pageIndex"
-            class="carousel__page"
-            role="group"
+        <div class="carousel__track" :style="{ transform: `translateX(-${page * 100}%)` }">
+          <div v-for="(group, pageIndex) in pages" :key="pageIndex" class="carousel__page" role="group"
             :aria-label="`Страница ${pageIndex + 1} из ${pageCount}`"
-            :aria-hidden="pageIndex !== page"
-          >
+            :aria-hidden="isMobile ? undefined : pageIndex !== page">
             <article v-for="member in group" :key="member.name" class="member">
-              <img :src="member.photo" :alt="member.name" width="320" height="400" />
+              <div class="member__avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="52%" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                </svg>
+              </div>
               <div class="member__info">
                 <h3>{{ member.name }}</h3>
                 <p class="role">{{ member.role }}</p>
@@ -99,17 +100,8 @@ function next() {
       </div>
 
       <div class="team__dots" role="tablist" aria-label="Страницы специалистов">
-        <button
-          v-for="(_, i) in pages"
-          :key="i"
-          type="button"
-          class="dot"
-          :class="{ 'is-active': i === page }"
-          :aria-label="`Страница ${i + 1}`"
-          :aria-selected="i === page"
-          role="tab"
-          @click="goTo(i)"
-        />
+        <button v-for="(_, i) in pages" :key="i" type="button" class="dot" :class="{ 'is-active': i === page }"
+          :aria-label="`Страница ${i + 1}`" :aria-selected="i === page" role="tab" @click="goTo(i)" />
       </div>
     </div>
   </section>
@@ -185,13 +177,19 @@ function next() {
   gap: 1.25rem;
 }
 
-.member img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  margin-bottom: 1rem;
+.member {
+  text-align: center;
+}
+
+.member__avatar {
+  display: grid;
+  place-items: center;
+  width: min(100%, 180px);
+  aspect-ratio: 1;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
   background: linear-gradient(160deg, #a5f3fc, #67e8f9);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .member__info h3 {
@@ -242,6 +240,38 @@ function next() {
 @media (min-width: 700px) {
   .carousel__page {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 699px) {
+
+  .team__controls,
+  .team__dots {
+    display: none;
+  }
+
+  .carousel__track {
+    transform: none !important;
+    transition: none;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel__page {
+    display: contents;
+  }
+
+  .member {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
   }
 }
 </style>
