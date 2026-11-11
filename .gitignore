@@ -25,3 +25,5 @@ logs
 
 # Source photos (converted to webp)
 _source-photos/
+.agents
+.claude

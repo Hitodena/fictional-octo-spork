@@ -1,24 +1,10 @@
 <script setup lang="ts">
 const clinic = useClinic()
-const el = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-  if (!el.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        el.value?.classList.add('is-visible')
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.1 },
-  )
-  observer.observe(el.value)
-})
 </script>
 
 <template>
-  <section id="services" ref="el" class="section services reveal">
+  <section id="services" class="section services">
     <div class="container">
       <div class="section-heading">
         <h2>{{ clinic.services.title }}</h2>
@@ -27,11 +13,11 @@ onMounted(() => {
 
       <div class="services__grid">
         <a
-          v-for="(item, i) in clinic.services.items"
+          v-for="item in clinic.services.items"
           :key="item.title"
           class="service"
           :href="item.href"
-          :style="{ '--delay': `${i * 60}ms` }"
+         
         >
           <img :src="item.image" :alt="item.title" width="560" height="360" />
           <div class="service__body">
@@ -49,12 +35,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.services {
-  background:
-    radial-gradient(700px 300px at 80% 10%, rgba(34, 211, 238, 0.18), transparent 60%),
-    transparent;
-}
-
 .services__grid {
   display: grid;
   gap: 1.25rem;
@@ -71,8 +51,12 @@ onMounted(() => {
 }
 
 .service:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+.service:hover img {
+  transform: scale(1.03);
 }
 
 .service:focus-visible {
@@ -84,7 +68,8 @@ onMounted(() => {
   width: 100%;
   aspect-ratio: 16 / 10;
   object-fit: cover;
-  background: linear-gradient(135deg, #67e8f9, #22d3ee);
+  background: var(--color-bg-soft);
+  transition: transform 400ms ease;
 }
 
 .service__body {

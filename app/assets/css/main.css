@@ -1,4 +1,4 @@
-﻿/* Design system: UI UX Pro Max - DentalClinicLanding
+/* Design system: UI UX Pro Max - DentalClinicLanding
    Colors: medical teal + health green | Fonts: Figtree + Noto Sans */
 
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap');
@@ -63,11 +63,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-text);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.22), transparent 55%),
-    radial-gradient(900px 500px at 95% 5%, rgba(8, 145, 178, 0.14), transparent 50%),
-    linear-gradient(180deg, #f0fdfa 0%, #ffffff 40%, #f0fdfa 100%);
-  background-attachment: fixed;
+  background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -160,6 +156,10 @@ p {
     transform 200ms ease, box-shadow 200ms ease;
 }
 
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
 .btn:focus-visible {
   outline: 3px solid var(--color-secondary);
   outline-offset: 3px;
@@ -198,45 +198,35 @@ p {
   background: rgba(255, 255, 255, 0.28);
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+.btn-ghost-dark {
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  border-color: var(--color-border);
 }
 
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-.fab-call {
+/* Липкая панель действий на мобильных: звонок и запись всегда под пальцем */
+.mobile-cta {
   position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
+  inset: auto 0 0 0;
   z-index: 60;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
   display: grid;
-  place-items: center;
-  background: var(--color-primary);
-  color: #fff;
-  box-shadow: var(--shadow-lg);
-  transition: transform 200ms ease, background 200ms ease;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -8px 24px rgba(8, 145, 178, 0.12);
 }
 
-.fab-call:hover {
-  transform: scale(1.06);
-  background: var(--color-primary-dark);
-}
-
-.fab-call:focus-visible {
-  outline: 3px solid var(--color-secondary);
-  outline-offset: 3px;
+@media (max-width: 899px) {
+  body {
+    padding-bottom: 76px;
+  }
 }
 
 @media (min-width: 900px) {
-  .fab-call {
+  .mobile-cta {
     display: none;
   }
 }

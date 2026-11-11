@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const clinic = useClinic()
-const el = ref<HTMLElement | null>(null)
 const page = ref(0)
 const isMobile = ref(false)
 
@@ -26,18 +25,6 @@ onMounted(() => {
   mq = window.matchMedia('(max-width: 699px)')
   syncMobile()
   mq.addEventListener('change', syncMobile)
-
-  if (!el.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        el.value?.classList.add('is-visible')
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.1 },
-  )
-  observer.observe(el.value)
 })
 
 onBeforeUnmount(() => {
@@ -58,7 +45,7 @@ function next() {
 </script>
 
 <template>
-  <section id="team" ref="el" class="section team reveal">
+  <section id="team" class="section team">
     <div class="container">
       <div class="team__head">
         <div class="section-heading" style="margin-bottom: 0">

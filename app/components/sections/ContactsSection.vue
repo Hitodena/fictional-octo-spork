@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const clinic = useClinic()
-const el = ref<HTMLElement | null>(null)
 
 const messengerMeta: Record<string, { className: string }> = {
   telegram: { className: 'is-telegram' },
@@ -8,23 +7,10 @@ const messengerMeta: Record<string, { className: string }> = {
   viber: { className: 'is-viber' },
 }
 
-onMounted(() => {
-  if (!el.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        el.value?.classList.add('is-visible')
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.1 },
-  )
-  observer.observe(el.value)
-})
 </script>
 
 <template>
-  <section id="contacts" ref="el" class="section contacts reveal">
+  <section id="contacts" class="section contacts">
     <div class="container">
       <div class="section-heading">
         <h2>Контакты</h2>

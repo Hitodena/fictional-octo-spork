@@ -3,9 +3,10 @@ const clinic = useClinic()
 const open = ref(false)
 
 const links = [
-  { href: '#about', label: 'О клинике' },
   { href: '#services', label: 'Услуги' },
-  { href: '#booking', label: 'Запись' },
+  { href: '#prices', label: 'Цены' },
+  { href: '#reviews', label: 'Отзывы' },
+  { href: '#about', label: 'О клинике' },
   { href: '#contacts', label: 'Контакты' },
 ]
 

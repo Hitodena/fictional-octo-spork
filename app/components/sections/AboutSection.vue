@@ -1,24 +1,10 @@
 <script setup lang="ts">
 const clinic = useClinic()
-const el = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-  if (!el.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        el.value?.classList.add('is-visible')
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.12 },
-  )
-  observer.observe(el.value)
-})
 </script>
 
 <template>
-  <section id="about" ref="el" class="section about reveal">
+  <section id="about" class="section about">
     <div class="container about__grid">
       <div class="about__visual">
         <img

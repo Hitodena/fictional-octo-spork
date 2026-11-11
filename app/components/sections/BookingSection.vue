@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 const clinic = useClinic()
-const el = ref<HTMLElement | null>(null)
 
 const form = reactive({
   name: '',
@@ -11,20 +10,6 @@ const form = reactive({
 
 const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
 const errorMsg = ref('')
-
-onMounted(() => {
-  if (!el.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        el.value?.classList.add('is-visible')
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.1 },
-  )
-  observer.observe(el.value)
-})
 
 async function onSubmit() {
   errorMsg.value = ''
@@ -63,7 +48,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <section id="booking" ref="el" class="section booking reveal">
+  <section id="booking" class="section booking">
     <div class="container booking__wrap">
       <div class="booking__intro">
         <h2>{{ clinic.booking.title }}</h2>
