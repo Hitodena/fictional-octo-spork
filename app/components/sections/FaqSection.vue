@@ -27,7 +27,9 @@ const clinic = useClinic()
 }
 
 details {
+  interpolate-size: allow-keywords;
   border-radius: var(--radius-md);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border);
@@ -42,6 +44,33 @@ summary {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+
+details:hover,
+details[open] {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* Плавное раскрытие: Chrome/Edge 131+, в остальных браузерах просто открывается */
+details::details-content {
+  block-size: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: block-size 300ms ease, opacity 300ms ease, content-visibility 300ms allow-discrete;
+}
+
+details[open]::details-content {
+  block-size: auto;
+  opacity: 1;
+}
+
+summary {
+  transition: color 200ms ease;
+}
+
+summary:hover {
+  color: var(--color-primary-dark);
 }
 
 summary::-webkit-details-marker {

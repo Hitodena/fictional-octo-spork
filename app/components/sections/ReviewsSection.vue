@@ -9,7 +9,6 @@ const clinic = useClinic()
       <div class="reviews__head">
         <div class="section-heading">
           <h2>{{ clinic.reviews.title }}</h2>
-          <p>Отзывы перенесены с Яндекс Карт без правок</p>
         </div>
         <a
           class="score"

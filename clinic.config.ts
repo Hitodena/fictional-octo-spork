@@ -124,6 +124,8 @@ export interface ClinicConfig {
      * Google: Maps → Поделиться → Встроить карту → src из iframe
      */
     embedUrl: string
+    /** Ссылка «Как добраться» под картой */
+    linkUrl: string
     height: number
   }
   social?: { name: string; href: string }[]
@@ -407,7 +409,8 @@ const config: ClinicConfig = {
     provider: 'yandex',
     // Только src из iframe Конструктора (не весь <iframe>...</iframe>)
     embedUrl:
-      'https://yandex.ru/map-widget/v1/org/medstar/1116421904/?ll=27.539049%2C53.889523&z=17&scroll=false',
+      'https://yandex.ru/map-widget/v1/?ll=27.539049%2C53.889523&z=16&pt=27.539049%2C53.889523%2Cpm2rdl&scroll=false',
+    linkUrl: 'https://yandex.by/maps/org/medstar/1116421904/',
     height: 480,
   },
 

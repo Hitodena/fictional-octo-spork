@@ -87,6 +87,10 @@ const messengerMeta: Record<string, { className: string }> = {
             referrerpolicy="no-referrer-when-downgrade"
             allowfullscreen
           />
+          <a class="map__link" :href="clinic.map.linkUrl" target="_blank" rel="noopener noreferrer">
+            <UiIcon name="map" :size="18" />
+            Как добраться: открыть в Яндекс Картах
+          </a>
         </div>
       </div>
     </div>
@@ -234,6 +238,24 @@ p {
   box-shadow: var(--shadow-md);
   background: #e0f2fe;
   width: 100%;
+}
+
+.map__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  margin: 0;
+  background: var(--color-surface);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  transition: background 180ms ease;
+}
+
+.map__link:hover {
+  background: var(--color-bg-soft);
 }
 
 .map iframe {
